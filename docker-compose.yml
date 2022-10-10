@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mitemperature:
+    restart: always
+    container_name: mitemperature
+    image: tanasecosminromeo:mitemperature
+    build:
+      context: ./mitemperature
+    network_mode: host #required for bluetooth access
+    privileged: true
+    depends_on:
+      - portforward
+    volumes:
+      - ./mitemperature/sensors.ini:/sensors.ini
+  
+  portforward:
+    restart: always
+    build:
+      context: ./portforward
+    container_name: portforward
+    network_mode: host #required for mitemperature to access portforward
+    env_file:
+      - ./.env
+    volumes:
+      - /root/.ssh/id_rsa:/root/.ssh/id_rsa
