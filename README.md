@@ -1,4 +1,4 @@
-# mitempmqtt
+# mitempmqtt v1.0.0
 Get temperature and humidity from Xiaomi Mijia flashed with https://github.com/pvvx/ATC_MiThermometer and send them to a private MQTT server (via ssh tunnel OR not)
 
 I built this project as I can't get in range of all my bluetooth sensors from anywhere, but I do have a bunch of Raspberry PIs that I also use for other stuff. Multiple instances of this project on multiple devices MAY connect to the same sensors, but this means that you should always get an up to date state for that sensor so, all good.
