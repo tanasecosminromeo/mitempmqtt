@@ -3,7 +3,7 @@ services:
   mitemperature:
     restart: always
     container_name: mitemperature
-    image: tanasecosminromeo:mitemperature
+    image: tanasecosminromeo/mitemperature:latest
     build:
       context: ./mitemperature
     network_mode: host #required for bluetooth access
