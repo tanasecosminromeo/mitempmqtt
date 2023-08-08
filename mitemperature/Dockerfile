@@ -4,7 +4,7 @@ ENV LANG C.UTF-8
 
 RUN apt-get update -y && apt-get -y --no-install-recommends install python3-pip libglib2.0-dev libbluetooth-dev build-essential
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN /usr/local/bin/pip3.7 install bluepy requests paho-mqtt pybluez pycryptodomex
+RUN /usr/local/bin/pip3.7 install bluepy requests paho-mqtt pybluez pycryptodomex python-slugify
 
 COPY app.py app.py 
 COPY sensors.ini sensors.ini

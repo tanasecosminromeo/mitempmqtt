@@ -2,34 +2,41 @@
 sensorname=Bedroom
 topic=mitemp/bedroom
 subtopics=temperature,voltage,humidity
+callback=homeassistant
 
 [A4:C1:38:12:27:EB]
 sensorname=Office
 topic=mitemp/office
 subtopics=temperature,voltage,humidity
+callback=homeassistant
 
 [A4:C1:38:AE:9A:72]
 sensorname=Hallway Bathroom
 topic=mitemp/hallway_bathroom
 subtopics=temperature,voltage,humidity
+callback=homeassistant
 
 [A4:C1:38:FD:12:0B]
 sensorname=Exterior Office
 topic=mitemp/exto
 subtopics=temperature,voltage,humidity
+callback=homeassistant
 
 [A4:C1:38:B5:11:31]
 sensorname=Kitchen
 topic=mitemp/kitchen
 subtopics=temperature,voltage,humidity
+callback=homeassistant
 
 [A4:C1:38:DA:02:5C]
 sensorname=Pod Centru
 topic=mitemp/podcentru
 subtopics=temperature,voltage,humidity
+callback=no
 
 [A4:C1:38:CA:B1:DB]
 sensorname=Pod Exterior N
 topic=mitemp/poden
 subtopics=temperature,voltage,humidity
+callback=no
 

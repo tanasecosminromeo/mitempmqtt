@@ -30,7 +30,7 @@ import logging
 import json
 import requests
 import ssl
-
+from slugify import slugify
 
 @dataclass
 class Measurement:
@@ -330,6 +330,44 @@ def MQTTOnPublish(client,userdata,mid):
 
 def MQTTOnDisconnect(client, userdata,rc):
 	print("MQTT disconnected, Client:", client, "Userdata:", userdata, "RC:", rc)	
+
+def sendToHomeAssistant(measurement):
+	jsonString=buildJSONString(measurement)
+	slug = "mitemperature_" + slugify(measurement.sensorname)
+
+	baseObject = {"state_topic": "homeassistant/sensor/" + slug, "device": { "model": "LYWSD03MMC", "manufacturer": "Xiaomi"}, "platform": "mqtt" }
+
+	for x in ["temperature", "humidity", "voltage", "battery", "rssi"]:
+		toBeSent = baseObject
+		if x == "rssi":
+			toBeSent["device_class"] = "signal_strength"
+		else:
+			toBeSent["device_class"] = x
+		toBeSent["name"] = measurement.sensorname + " " + x.title()
+		toBeSent["unique_id"] = slug + "_" + x
+		toBeSent["value_template"] = "{{ value_json." + x + "}}"
+		toBeSent["device"]["name"] = measurement.sensorname
+		toBeSent["device"]["identifiers"] = slug
+
+		if x == "temperature":
+			toBeSent["unit_of_measurement"] = "°C"
+		elif x == "humidity":
+			toBeSent["unit_of_measurement"] = "%"
+		elif x == "voltage":
+			toBeSent["unit_of_measurement"] = "V"
+		elif x == "battery":
+			toBeSent["unit_of_measurement"] = "%"
+		elif x == "rssi":
+			toBeSent["unit_of_measurement"] = "dBm"
+		else:
+			continue
+
+		MQTTClient.publish("homeassistant/sensor/" + slug + "/" + x + "/config", json.dumps(toBeSent), 1)
+
+	#send state
+	myMQTTPublish(baseObject['state_topic'],jsonString)
+	#myMQTTPublish(currentMQTTTopic,jsonString)
+	#MQTTClient.publish(currentMQTTTopic,jsonString,1)
 
 # Main loop --------
 parser=argparse.ArgumentParser(allow_abbrev=False,epilog=readme)
@@ -800,6 +838,7 @@ elif args.passive:
 				print ("Battery:", measurement.battery,"%")
 				
 				currentMQTTTopic = MQTTTopic
+				sensorCallback = None 
 				if mac in sensors:
 					try:
 						measurement.sensorname = sensors[mac]["sensorname"]
@@ -813,6 +852,8 @@ elif args.passive:
 						print ("Humidity calibrated (offset calibration): ", measurement.humidity)
 					if "topic" in sensors[mac]:
 						currentMQTTTopic=sensors[mac]["topic"]
+					if "callback" in sensors[mac]:
+						sensorCallback=sensors[mac]["callback"]
 				else:
 					measurement.sensorname = mac
 				
@@ -823,9 +864,12 @@ elif args.passive:
 					measurements.append(measurement)
 
 				if args.mqttconfigfile:
-					jsonString=buildJSONString(measurement)
-					myMQTTPublish(currentMQTTTopic,jsonString)
-					#MQTTClient.publish(currentMQTTTopic,jsonString,1)
+					if sensorCallback == "homeassistant":
+						sendToHomeAssistant(measurement)
+					else:
+						jsonString=buildJSONString(measurement)
+						myMQTTPublish(currentMQTTTopic,jsonString)
+						#MQTTClient.publish(currentMQTTTopic,jsonString,1)
 
 				#print("Length:", len(measurements))
 				print("")
