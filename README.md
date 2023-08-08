@@ -24,6 +24,21 @@ In `./mitemperature` you have `sensors.ini.dist`, copy this to `./mitemperature/
 ### How to run?
 Easy `docker-compose up -d` and if you preconfigured all of the above you're gold!
 
+### Easier version?
+If you just want this to run along side a Home Assistant container, checkout `docker-compose.yml.sample.ha.yml` - setup just your sensors.ini and you're good to go!
+
+You don't want to use docker compose?
+
+```
+docker run -d \
+  --name mitemperature \
+  --restart always \
+  --network host \
+  --privileged \
+  -v $(pwd)/mitemperature/sensors.ini:/sensors.ini \
+  tanasecosminromeo/mitemperature:latest
+```
+
 ## How to use in Home Assistant
 - Install an MQTT broker *(or add to this container, I may add a version here too using mosquitto broker https://hub.docker.com/_/eclipse-mosquitto )* 
 - Add MQTT Integration

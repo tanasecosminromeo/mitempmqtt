@@ -1,0 +1,30 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+  
+  mitemperature:
+    restart: always
+    container_name: mitemperature
+    image: tanasecosminromeo/mitemperature:latest
+    network_mode: host #required for bluetooth access
+    privileged: true
+    volumes:
+      - ./mitemperature/sensors.ini:/sensors.ini
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    volumes:
+      - ./mosquitto:/mosquitto
+    ports:
+      - 1883:1883
+      - 9001:9001    
