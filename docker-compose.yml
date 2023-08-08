@@ -22,4 +22,4 @@ services:
     env_file:
       - ./.env
     volumes:
-      - /root/.ssh/id_rsa:/root/.ssh/id_rsa
+      - ~/.ssh/id_rsa:/root/.ssh/id_rsa
