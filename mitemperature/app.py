@@ -343,7 +343,7 @@ def sendToHomeAssistant(measurement):
 			toBeSent["device_class"] = "signal_strength"
 		else:
 			toBeSent["device_class"] = x
-		toBeSent["name"] = measurement.sensorname + " " + x.title()
+		toBeSent["name"] = x.title()
 		toBeSent["unique_id"] = slug + "_" + x
 		toBeSent["value_template"] = "{{ value_json." + x + "}}"
 		toBeSent["device"]["name"] = measurement.sensorname
